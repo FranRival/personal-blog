@@ -15,3 +15,9 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+const authMiddleware = require('./src/middleware/auth');
+
+app.get('/secure-test', authMiddleware, (req, res) => {
+    res.json({ message: 'You are authorized' });
+});
