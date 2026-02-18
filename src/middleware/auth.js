@@ -1,12 +1,9 @@
-
-
-
-
 module.exports = function (req, res, next) {
-    
-    console.log(req.headers);
 
     const apiKey = req.headers['x-api-key'];
+
+    console.log("Header key:", apiKey);
+    console.log("Env key:", process.env.API_KEY);
 
     if (!apiKey) {
         return res.status(401).json({ error: 'API key missing' });
