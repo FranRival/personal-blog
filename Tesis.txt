@@ -1,0 +1,17 @@
+Sistema de Horas de Automatización
+🎯 Objetivo
+
+Microservicio independiente que:
+
+Reciba horas vía API
+
+Guarde datos
+
+Exponga datos
+
+Sea desacoplado de WordPress
+
+Sea migrable a cloud
+
+
+
