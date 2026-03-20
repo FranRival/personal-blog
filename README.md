@@ -75,21 +75,21 @@ Dentro de la instancia se configuró el siguiente stack:
 
 ## 📦 Estructura del proyecto
 
-root/
-│
-├── src/
-│ ├── database/
-│ └── middleware/
-│
-├── .dockerignore
-├── .gitignore
-├── Dockerfile
-├── README.md
-├── Tesis.txt
-├── database.sqlite
-├── package.json
-├── package-lock.json
-└── server.js
+root/  
+│  
+├── src/  
+│ ├── database/  
+│ └── middleware/  
+│  
+├── .dockerignore  
+├── .gitignore  
+├── Dockerfile  
+├── README.md  
+├── Tesis.txt  
+├── database.sqlite  
+├── package.json  
+├── package-lock.json  
+└── server.js  
 
 
 
