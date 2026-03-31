@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const db = require('./src/database/db');
 const authMiddleware = require('./src/middleware/auth');
+const { getStatusByDate } = require('./src/monitor/healthMonitor');
 
 const API_KEY = process.env.API_KEY;
 const app = express();
@@ -57,4 +58,17 @@ app.post('/api/hours', authMiddleware, (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
+});
+
+
+app.get('/api/status', authMiddleware, (req, res) => {
+
+    getStatusByDate((err, status) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        res.json(status);
+    });
+
 });
