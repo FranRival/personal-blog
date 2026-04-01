@@ -61,7 +61,7 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 
 
-app.get('/api/status', authMiddleware, (req, res) => {
+app.get('/api/status', (req, res) => {
 
     getStatusByDate((err, status) => {
         if (err) {
