@@ -2,7 +2,6 @@ const db = require('../database/db');
 
 function getStatusByDate(callback) {
 
-    // 1. Obtener todos los registros
     db.all("SELECT date, created_at FROM hours ORDER BY date ASC", [], (err, rows) => {
         if (err) {
             return callback(err, null);
@@ -14,19 +13,18 @@ function getStatusByDate(callback) {
 
         const statusByDate = {};
 
-        // 2. Detectar último registro (salud del sistema)
+        // 🔥 1. Detectar último registro (salud global)
         const lastRecord = rows[rows.length - 1];
         const lastCreatedAt = new Date(lastRecord.created_at);
         const now = new Date();
 
         const diffHours = (now - lastCreatedAt) / (1000 * 60 * 60);
-
         const systemDown = diffHours > 48;
 
-        // 3. Crear mapa de fechas existentes
+        // 🔥 2. Mapa de días existentes
         const existingDates = new Set(rows.map(r => r.date));
 
-        // 4. Rango de fechas (del primer registro hasta hoy)
+        // 🔥 3. Rango completo (desde primer registro hasta hoy)
         const startDate = new Date(rows[0].date);
         const endDate = new Date();
 
@@ -34,16 +32,32 @@ function getStatusByDate(callback) {
 
             const dateStr = d.toISOString().split('T')[0];
 
+            /*
+            ======================================================
+            🔴 PRIORIDAD 1: SISTEMA CAÍDO
+            ======================================================
+            */
             if (systemDown) {
                 statusByDate[dateStr] = { status: 'error' };
                 continue;
             }
 
+            /*
+            ======================================================
+            🔴 PRIORIDAD 2: DÍA FALTANTE
+            ======================================================
+            */
             if (!existingDates.has(dateStr)) {
                 statusByDate[dateStr] = { status: 'error' };
-            } else {
-                statusByDate[dateStr] = { status: 'ok' };
+                continue;
             }
+
+            /*
+            ======================================================
+            🟢 TODO OK
+            ======================================================
+            */
+            statusByDate[dateStr] = { status: 'ok' };
         }
 
         callback(null, statusByDate);
