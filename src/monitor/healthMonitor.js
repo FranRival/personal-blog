@@ -30,35 +30,17 @@ function getStatusByDate(callback) {
 
         for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
 
-            const dateStr = d.toISOString().split('T')[0];
+        const dateStr = d.toISOString().split('T')[0];
 
-            /*
-            ======================================================
-            🔴 PRIORIDAD 1: SISTEMA CAÍDO
-            ======================================================
-            */
-            if (systemDown) {
-                statusByDate[dateStr] = { status: 'error' };
-                continue;
-            }
-
-            /*
-            ======================================================
-            🔴 PRIORIDAD 2: DÍA FALTANTE
-            ======================================================
-            */
-            if (!existingDates.has(dateStr)) {
-                statusByDate[dateStr] = { status: 'error' };
-                continue;
-            }
-
-            /*
-            ======================================================
-            🟢 TODO OK
-            ======================================================
-            */
-            statusByDate[dateStr] = { status: 'ok' };
+        // 🔴 Si el día NO existe en DB → ERROR
+        if (!existingDates.has(dateStr)) {
+            statusByDate[dateStr] = { status: 'error' };
+            continue;
         }
+
+        // 🟢 Si existe → OK
+        statusByDate[dateStr] = { status: 'ok' };
+    }
 
         callback(null, statusByDate);
     });
