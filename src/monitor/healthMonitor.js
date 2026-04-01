@@ -13,34 +13,55 @@ function getStatusByDate(callback) {
 
         const statusByDate = {};
 
-        // 🔥 1. Detectar último registro (salud global)
-        const lastRecord = rows[rows.length - 1];
-        const lastCreatedAt = new Date(lastRecord.created_at);
-        const now = new Date();
-
-        const diffHours = (now - lastCreatedAt) / (1000 * 60 * 60);
-        const systemDown = diffHours > 48;
-
-        // 🔥 2. Mapa de días existentes
+        // 🔥 MAPA DE DÍAS CON DATOS
         const existingDates = new Set(rows.map(r => r.date));
 
-        // 🔥 3. Rango completo (desde primer registro hasta hoy)
+        // 🔥 RANGO: desde el primer dato hasta hoy
         const startDate = new Date(rows[0].date);
         const endDate = new Date();
 
+        // 🔥 DEFINE CUÁNDO EMPEZÓ EL SISTEMA REALMENTE
+        // Ajusta esta fecha según tu caso real
+        const systemStartDate = new Date('2026-03-02');
+
         for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
 
-        const dateStr = d.toISOString().split('T')[0];
+            const dateStr = d.toISOString().split('T')[0];
 
-        // 🔴 Si el día NO existe en DB → ERROR
-        if (!existingDates.has(dateStr)) {
-            statusByDate[dateStr] = { status: 'error' };
-            continue;
+            /*
+            ======================================================
+            🔵 ANTES DEL SISTEMA
+            - Si hay dato → OK
+            - Si no hay dato → ignorar (NO error)
+            ======================================================
+            */
+            if (d < systemStartDate) {
+
+                if (existingDates.has(dateStr)) {
+                    statusByDate[dateStr] = { status: 'ok' };
+                }
+
+                continue;
+            }
+
+            /*
+            ======================================================
+            🔴 DESPUÉS DEL SISTEMA
+            - Si no hay dato → ERROR
+            ======================================================
+            */
+            if (!existingDates.has(dateStr)) {
+                statusByDate[dateStr] = { status: 'error' };
+                continue;
+            }
+
+            /*
+            ======================================================
+            🟢 TODO OK
+            ======================================================
+            */
+            statusByDate[dateStr] = { status: 'ok' };
         }
-
-        // 🟢 Si existe → OK
-        statusByDate[dateStr] = { status: 'ok' };
-    }
 
         callback(null, statusByDate);
     });
