@@ -23,17 +23,26 @@ function getStatusByDate(callback) {
 
         /*
         ======================================================
-        🔥 NUEVO: CHECAR SI LA API RESPONDE
+        🔥 CHECK EXTERNAL MONITOR (NUEVO)
         ======================================================
         */
-        let apiDown = false;
+        let externalStatus = {
+            status: 'unknown',
+            error: null
+        };
 
         try {
-            await axios.get('https://api.emmanuelibarra.com/api/health', {
-                timeout: 3000
+            const external = await axios.get('http://IP_MONITOR:8080/api_status.json', {
+                timeout: 2000
             });
+
+            externalStatus = external.data;
+
         } catch (e) {
-            apiDown = true;
+            externalStatus = {
+                status: 'down',
+                error: e.code || 'external_unreachable'
+            };
         }
 
         /*
@@ -55,16 +64,24 @@ function getStatusByDate(callback) {
                 continue;
             }
 
-            // 🔴 API CAÍDA (PRIORIDAD MÁXIMA)
-            if (apiDown) {
+            /*
+            ======================================================
+            🔴 PRIORIDAD 1: EXTERNAL MONITOR
+            ======================================================
+            */
+            if (externalStatus.status === 'down') {
                 statusByDate[dateStr] = { 
                     status: 'error',
-                    type: 'api_down'
+                    type: externalStatus.error || 'api_down'
                 };
                 continue;
             }
 
-            // 🟡 SIN DATOS
+            /*
+            ======================================================
+            🟡 SIN DATOS
+            ======================================================
+            */
             if (!existingDates.has(dateStr)) {
                 statusByDate[dateStr] = { 
                     status: 'error',
@@ -73,7 +90,11 @@ function getStatusByDate(callback) {
                 continue;
             }
 
-            // 🟢 OK
+            /*
+            ======================================================
+            🟢 OK
+            ======================================================
+            */
             statusByDate[dateStr] = { 
                 status: 'ok',
                 type: 'ok'
@@ -89,3 +110,6 @@ module.exports = {
 };
 
 //API caida - servidor apagado - problemas de red - timeout - DNS - firewall ---- todos son la misma categoria: api_down. ERROR. 
+
+//[External monitor]
+//creado en otra instancia de lightsail.
