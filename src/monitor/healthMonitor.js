@@ -1,143 +1,89 @@
 const db = require('../database/db');
-
-
+const axios = require('axios');
 
 function getStatusByDate(callback) {
 
-
-
-    db.all("SELECT date, created_at FROM hours ORDER BY date ASC", [], (err, rows) => {
-
+    db.all("SELECT date, created_at FROM hours ORDER BY date ASC", [], async (err, rows) => {
         if (err) {
-
             return callback(err, null);
-
         }
-
-
 
         if (!rows.length) {
-
             return callback(null, {});
-
         }
-
-
 
         const statusByDate = {};
 
-
-
-        // ������ MAPA DE DÍAS CON DATOS
-
         const existingDates = new Set(rows.map(r => r.date));
 
-
-
-        // ������ RANGO: desde el primer dato hasta hoy
-
         const startDate = new Date(rows[0].date);
-
         const endDate = new Date();
-
-
-
-        // ������ DEFINE CUÁNDO EMPEZÓ EL SISTEMA REALMENTE
-
-        // Ajusta esta fecha según tu caso real
 
         const systemStartDate = new Date('2026-03-02');
 
+        /*
+        ======================================================
+        🔥 NUEVO: CHECAR SI LA API RESPONDE
+        ======================================================
+        */
+        let apiDown = false;
 
+        try {
+            await axios.get('https://api.emmanuelibarra.com/api/health', {
+                timeout: 3000
+            });
+        } catch (e) {
+            apiDown = true;
+        }
 
+        /*
+        ======================================================
+        LOOP
+        ======================================================
+        */
         for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-
-
 
             const dateStr = d.toISOString().split('T')[0];
 
-
-
-            /*
-
-            ======================================================
-
-            ������ ANTES DEL SISTEMA
-
-            - Si hay dato → OK
-
-            - Si no hay dato → ignorar (NO error)
-
-            ======================================================
-
-            */
-
+            // 🔵 ANTES DEL SISTEMA
             if (d < systemStartDate) {
 
-
-
                 if (existingDates.has(dateStr)) {
-
                     statusByDate[dateStr] = { status: 'ok' };
-
                 }
 
-
-
                 continue;
-
             }
 
+            // 🔴 API CAÍDA (PRIORIDAD MÁXIMA)
+            if (apiDown) {
+                statusByDate[dateStr] = { 
+                    status: 'error',
+                    type: 'api_down'
+                };
+                continue;
+            }
 
-
-            /*
-
-            ======================================================
-
-            ������ DESPUÉS DEL SISTEMA
-
-            - Si no hay dato → ERROR
-
-            ======================================================
-
-            */
-
+            // 🟡 SIN DATOS
             if (!existingDates.has(dateStr)) {
-
-                statusByDate[dateStr] = { status: 'error' };
-
+                statusByDate[dateStr] = { 
+                    status: 'error',
+                    type: 'no_data'
+                };
                 continue;
-
             }
 
-
-
-            /*
-
-            ======================================================
-
-            ������ TODO OK
-
-            ======================================================
-
-            */
-
-            statusByDate[dateStr] = { status: 'ok' };
-
+            // 🟢 OK
+            statusByDate[dateStr] = { 
+                status: 'ok',
+                type: 'ok'
+            };
         }
 
-
-
         callback(null, statusByDate);
-
     });
-
 }
 
-
-
 module.exports = {
-
     getStatusByDate
-
 };
