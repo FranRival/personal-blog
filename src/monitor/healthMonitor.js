@@ -13,19 +13,11 @@ function getStatusByDate(callback) {
         }
 
         const statusByDate = {};
-
         const existingDates = new Set(rows.map(r => r.date));
 
         const startDate = new Date(rows[0].date);
         const endDate = new Date();
 
-        const systemStartDate = new Date('2026-03-02');
-
-        /*
-        ======================================================
-        🔥 CHECK EXTERNAL MONITOR
-        ======================================================
-        */
         let externalStatus = {
             status: 'unknown',
             error: null
@@ -45,18 +37,10 @@ function getStatusByDate(callback) {
             };
         }
 
-        /*
-        ======================================================
-        LOOP
-        ======================================================
-        */
         for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
 
             const dateStr = d.toISOString().split('T')[0];
 
-            /*
-            🔴 PRIORIDAD 1: EXTERNAL MONITOR
-            */
             if (externalStatus.status === 'down') {
                 statusByDate[dateStr] = { 
                     status: 'error',
@@ -65,9 +49,6 @@ function getStatusByDate(callback) {
                 continue;
             }
 
-            /*
-            🟡 SIN DATOS
-            */
             if (!existingDates.has(dateStr)) {
                 statusByDate[dateStr] = { 
                     status: 'error',
@@ -76,9 +57,6 @@ function getStatusByDate(callback) {
                 continue;
             }
 
-            /*
-            🟢 OK
-            */
             statusByDate[dateStr] = { 
                 status: 'ok',
                 type: 'ok'
