@@ -23,7 +23,7 @@ function getStatusByDate(callback) {
 
         /*
         ======================================================
-        🔥 CHECK EXTERNAL MONITOR (NUEVO)
+        🔥 CHECK EXTERNAL MONITOR
         ======================================================
         */
         let externalStatus = {
@@ -54,15 +54,8 @@ function getStatusByDate(callback) {
 
             const dateStr = d.toISOString().split('T')[0];
 
-            statusByDate[dateStr] = { 
-                status: 'ok',
-                type: 'ok'
-            };
-
             /*
-            ======================================================
             🔴 PRIORIDAD 1: EXTERNAL MONITOR
-            ======================================================
             */
             if (externalStatus.status === 'down') {
                 statusByDate[dateStr] = { 
@@ -73,9 +66,7 @@ function getStatusByDate(callback) {
             }
 
             /*
-            ======================================================
             🟡 SIN DATOS
-            ======================================================
             */
             if (!existingDates.has(dateStr)) {
                 statusByDate[dateStr] = { 
@@ -86,9 +77,7 @@ function getStatusByDate(callback) {
             }
 
             /*
-            ======================================================
             🟢 OK
-            ======================================================
             */
             statusByDate[dateStr] = { 
                 status: 'ok',
@@ -103,8 +92,3 @@ function getStatusByDate(callback) {
 module.exports = {
     getStatusByDate
 };
-
-//API caida - servidor apagado - problemas de red - timeout - DNS - firewall ---- todos son la misma categoria: api_down. ERROR. 
-
-//[External monitor]
-//creado en otra instancia de lightsail.
