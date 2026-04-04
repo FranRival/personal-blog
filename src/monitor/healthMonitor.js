@@ -87,3 +87,5 @@ function getStatusByDate(callback) {
 module.exports = {
     getStatusByDate
 };
+
+//API caida - servidor apagado - problemas de red - timeout - DNS - firewall ---- todos son la misma categoria: api_down. ERROR. 
