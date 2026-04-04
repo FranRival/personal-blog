@@ -11,7 +11,7 @@ const db = require('./src/database/db');
 const authMiddleware = require('./src/middleware/auth');
 const { getStatusByDate } = require('./src/monitor/healthMonitor');
 
-const { getStatusByDate } = require('./src/monitor/healthMonitor');
+
 
 
 
@@ -43,7 +43,7 @@ app.get('/secure-test', authMiddleware, (req, res) => {
 
 
 
-// í ½í´¹ GET hours (va aquÃ­)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GET hours (va aquÃ­)
 
 app.get('/api/hours', authMiddleware, (req, res) => {
 
@@ -63,7 +63,7 @@ app.get('/api/hours', authMiddleware, (req, res) => {
 
 
 
-// í ½í´¹ POST hours (tambiÃ©n aquÃ­)
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ POST hours (tambiÃ©n aquÃ­)
 
 app.post('/api/hours', authMiddleware, (req, res) => {
 
