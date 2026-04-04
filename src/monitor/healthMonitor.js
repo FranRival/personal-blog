@@ -32,7 +32,7 @@ function getStatusByDate(callback) {
         };
 
         try {
-            const external = await axios.get('http://IP_MONITOR:8080/api_status.json', {
+            const external = await axios.get('http://44.203.231.13:8080/api_status.json', {
                 timeout: 2000
             });
 
