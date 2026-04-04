@@ -54,15 +54,10 @@ function getStatusByDate(callback) {
 
             const dateStr = d.toISOString().split('T')[0];
 
-            // 🔵 ANTES DEL SISTEMA
-            if (d < systemStartDate) {
-
-                if (existingDates.has(dateStr)) {
-                    statusByDate[dateStr] = { status: 'ok' };
-                }
-
-                continue;
-            }
+            statusByDate[dateStr] = { 
+                status: 'ok',
+                type: 'ok'
+            };
 
             /*
             ======================================================
