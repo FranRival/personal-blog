@@ -159,3 +159,13 @@ app.get('/api/status', (req, res) => {
     });
 
 });
+
+
+///Tenemos 2 estancias
+//Lisghtsail A - Automatization API
+//Lisghtsail B - Monitor
+
+//Monitor externo: detecta si la API responde
+//clasifica en 3 errores: Econnrefused, timeout,... u otra no me acuerdo.
+
+//
