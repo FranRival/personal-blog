@@ -41,10 +41,12 @@ function getStatusByDate(callback) {
 
             const dateStr = d.toISOString().split('T')[0];
 
-            if (externalStatus.status === 'down') {
+            const today = new Date().toISOString().split('T')[0];
+
+            if (externalStatus.status === 'down' && dateStr === today) {
                 statusByDate[dateStr] = { 
                     status: 'error',
-                    type: externalStatus.error || 'api_down'
+                    type: externalStatus.error
                 };
                 continue;
             }
