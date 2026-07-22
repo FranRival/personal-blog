@@ -52,8 +52,8 @@ function getStatusByDate(callback) {
                         status: 'error',
                         type: externalStatus.error
                     };
-                    continue;
                 }
+                    continue;
                 }
 
             if (!existingDates.has(dateStr)) {
