@@ -1,9 +1,6 @@
 require ('dotenv').config();
 
 
-
-require('dotenv').config();
-
 const express = require('express');
 
 const db = require('./src/database/db');
@@ -147,18 +144,6 @@ app.get('/api/status', (req, res) => {
 
 });
 
-
-app.get('/api/status', (req, res) => {
-
-    getStatusByDate((err, status) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-
-        res.json(status);
-    });
-
-});
 
 
 ///Tenemos 2 estancias

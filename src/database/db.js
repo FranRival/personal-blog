@@ -25,3 +25,6 @@ db.serialize(() => {
 });
 
 module.exports = db;
+
+
+//creamos la base de datos aqui y la exportamos.
