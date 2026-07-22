@@ -49,8 +49,6 @@ app.post('/api/hours', authMiddleware, (req, res) => {
         return res.status(400).json({ error: 'Date and hours are required' });
     }
 
-
-
     db.run(
 
         `INSERT INTO hours (date, hours, source) VALUES (?, ?, ?)`,
@@ -62,17 +60,39 @@ app.post('/api/hours', authMiddleware, (req, res) => {
                 return res.status(500).json({ error: err.message });
             }
 
-
-
             res.json({
                 message: 'Hours inserted successfully',
                 id: this.lastID
             });
         }
     );
-
 });
 
+
+app.post('/api/pause', authMiddleware, (req, res) => {
+
+    const { start_date, end_date, reason } = req.body;
+
+    if (!start_date || !end_date) {
+        return res.status(400).json({ error: 'start_date y end_date son requeridos' });
+    }
+
+    db.run(
+        `INSERT INTO paused_ranges (start_date, end_date, reason) VALUES (?, ?, ?)`,
+        [start_date, end_date, reason || null],
+        function (err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.json({
+                message: 'Pausa registrada correctamente',
+                id: this.lastID
+            });
+        }
+    );
+
+});
 
 
 app.listen(PORT, '0.0.0.0', () => {
