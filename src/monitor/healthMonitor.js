@@ -43,13 +43,18 @@ function getStatusByDate(callback) {
 
             const today = new Date().toISOString().split('T')[0];
 
-            if (externalStatus.status === 'down' && dateStr === today) {
-                statusByDate[dateStr] = { 
-                    status: 'error',
-                    type: externalStatus.error
-                };
-                continue;
-            }
+            //ERROR - comenzando solucion.
+                if (externalStatus.status === 'down' && dateStr === today) {
+                    if (isDatePaused(dateStr, pausedRanges)) {
+                        statusByDate[dateStr] = { status: 'paused', type: 'intentional' };
+                    } else {
+                    statusByDate[dateStr] = { 
+                        status: 'error',
+                        type: externalStatus.error
+                    };
+                    continue;
+                }
+                }
 
             if (!existingDates.has(dateStr)) {
                 statusByDate[dateStr] = { 
@@ -73,4 +78,7 @@ module.exports = {
     getStatusByDate
 };
 
-//error. API. La linea 54 pinta cuadros rojos sin logica. Usando los esapcios sin automatizacion en color rojo. 
+//error. API. La linea 54 pinta cuadros rojos sin logica. Asume usando solo el dia de hoy como punto de referencia. Dado que no pregunta a nadie, asume lo peor. 
+//No hay un tercer estado que diga que es un sistema de pausa. 
+
+//FIX:
