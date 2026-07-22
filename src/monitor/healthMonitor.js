@@ -72,3 +72,5 @@ function getStatusByDate(callback) {
 module.exports = {
     getStatusByDate
 };
+
+//error. API. La linea 54 pinta cuadros rojos sin logica. Usando los esapcios sin automatizacion en color rojo. 
