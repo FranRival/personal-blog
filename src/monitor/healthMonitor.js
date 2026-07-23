@@ -1,6 +1,21 @@
 const db = require('../database/db');
 const axios = require('axios');
 
+
+function getPausedRanges(callback) {
+    db.all("SELECT start_date, end_date FROM paused_ranges", [], (err, rows) => {
+        if (err) return callback(err, null);
+        callback(null, rows);
+    });
+}
+
+// Revisa si una fecha específica cae dentro de alguna pausa registrada
+function isDatePaused(dateStr, pausedRanges) {
+    return pausedRanges.some(range => {
+        return dateStr >= range.start_date && dateStr <= range.end_date;
+    });
+}
+
 function getStatusByDate(callback) {
 
     db.all("SELECT date, created_at FROM hours ORDER BY date ASC", [], async (err, rows) => {
